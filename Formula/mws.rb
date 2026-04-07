@@ -29,33 +29,10 @@ class Mws < Formula
     bin.install binary => "mws"
   end
 
-  def post_install
-    marker = "# >>> mws initialize >>>"
-    shell = ENV["SHELL"] || "/bin/zsh"
-    rc = if shell.include?("zsh")
-           File.expand_path("~/.zshrc")
-         elsif shell.include?("bash")
-           File.expand_path("~/.bashrc")
-         else
-           File.exist?(File.expand_path("~/.zshrc")) ? File.expand_path("~/.zshrc") : File.expand_path("~/.bashrc")
-         end
-
-    return if File.exist?(rc) && File.read(rc).include?(marker)
-
-    File.open(rc, "a") do |f|
-      f.puts ""
-      f.puts marker
-      f.puts 'eval "$(mws shell-init)"'
-      f.puts "# <<< mws initialize <<<"
-    end
-    ohai "Shell integration added to #{rc}"
-  end
-
   def caveats
     <<~EOS
-      Shell integration (mcd, prompt) has been automatically added to your shell rc file.
-      Restart your shell or run:
-        source ~/.zshrc
+      Add to your ~/.zshrc:
+        eval "$(mws shell-init)"
     EOS
   end
 
